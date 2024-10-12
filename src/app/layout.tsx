@@ -1,11 +1,11 @@
+// src/app/layout.tsx
+
 import type { Metadata } from "next";
 import "./globals.css";
-import Header from "@/Components/Header";
 import Providers from "./Providers";
 import { ReactNode } from "react";
 import { Inter } from 'next/font/google';
-import Navbar from "@/Components/Navbar";
-import SearchBox from "@/Components/SearchBox";
+import ClientHeader from "@/Components/ClientHeader"; // Import the new ClientHeader component
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -24,9 +24,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
     <html lang="en">
       <body className={inter.className}>
         <Providers>
-          <Header />
-          <Navbar />
-          <SearchBox />
+          <ClientHeader /> {/* Use the new ClientHeader component */}
           {children}
         </Providers>
       </body>
