@@ -28,7 +28,7 @@ const MoviesPage = () => {
           <li key={movie._id}>
             <h2>{movie.titre}</h2>
             <p>{movie.description}</p>
-            <img src={movie.affiche} alt={movie.titre} width="100" />
+            {/* <img src={movie.affiche} alt={movie.titre} width="100" /> */}
             <p>Note: {movie.note}</p>
             <p>Date: {new Date(movie.date_de_sortie).toDateString()}</p>
           </li>
