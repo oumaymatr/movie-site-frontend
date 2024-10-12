@@ -1,4 +1,5 @@
 import Results from "@/Components/Results";
+import Greeting from "@/Components/Greeting";
 interface SearchParams {
   genre?: string;
 }
@@ -25,6 +26,7 @@ export default async function Home({
 
   return (
     <div>
+      <Greeting /> {/* Render the Greeting component here */}
       <Results results={results} />
     </div>
   );

@@ -4,7 +4,7 @@ import { FaHome } from "react-icons/fa";
 import { FaInfoCircle } from "react-icons/fa";
 import { FaBookmark } from "react-icons/fa";
 import DarkModeSwitch from "./DarkModeSwitch";
-import Image from "next/image"; 
+import AuthDropdown from "./AuthDropdown"; 
 
 export default function Header() {
   return (
@@ -27,16 +27,7 @@ export default function Header() {
       </div>
       <div className="flex items-center gap-4">
         <DarkModeSwitch />
-
-        <Link href="/profile">
-          <Image
-            src="https://www.svgrepo.com/show/382097/female-avatar-girl-face-woman-user-9.svg" // SVG URL
-            alt="Profile Picture"
-            width={40}
-            height={40}
-            className="rounded-full cursor-pointer border-2 border-gray-800 dark:border-gray-200 transition duration-300 hover:scale-105"
-          />
-        </Link>
+        <AuthDropdown/>
       </div>
     </div>
   );
