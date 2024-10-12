@@ -12,8 +12,13 @@ const config: Config = {
         background: "var(--background)",
         foreground: "var(--foreground)",
       },
+      fontFamily: {
+        changa: ['Changa', 'sans-serif'],
+      },
     },
+    
   },
   plugins: [],
+  darkMode: 'class'
 };
 export default config;

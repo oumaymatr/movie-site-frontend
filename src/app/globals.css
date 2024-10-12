@@ -2,26 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@font-face {
+  font-family: 'Changa';
+  src: url('../app/fonts/Changa-VariableFont_wght.ttf') format('truetype');
+  font-weight: 200 800; /* Range of weights */
+  font-display: swap; /* Optional: for better loading performance */
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-}
-
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+.font-changa {
+  font-family: 'Changa', sans-serif; /* Fallback to sans-serif */
 }
