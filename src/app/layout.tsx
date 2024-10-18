@@ -23,9 +23,13 @@ export default function RootLayout({ children }: RootLayoutProps) {
     <html lang="en">
       <body className={inter.className}>
         <Providers>
-          <ClientHeader /> 
-          {children}
-          <Footer/>
+          <div className="flex flex-col min-h-screen">
+            <ClientHeader /> 
+            <main className="flex-grow">
+              {children}
+            </main>
+            <Footer />
+          </div>
         </Providers>
       </body>
     </html>

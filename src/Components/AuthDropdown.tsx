@@ -1,11 +1,12 @@
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation"; // Import useRouter for navigation
 
 export default function AuthDropdown() {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter(); // Create an instance of useRouter for redirection
+  const dropdownRef = useRef<HTMLDivElement | null>(null); // Create a ref for the dropdown
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
@@ -22,8 +23,25 @@ export default function AuthDropdown() {
   // Check if the user is logged in by looking for the token
   const isLoggedIn = !!localStorage.getItem("token");
 
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    // Bind the event listener
+    document.addEventListener("mousedown", handleClickOutside);
+    
+    // Clean up the event listener on component unmount
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [dropdownRef]);
+
   return (
-    <div className="relative">
+    <div className="relative" ref={dropdownRef}>
       <button onClick={toggleDropdown} className="focus:outline-none">
         <Image
           src="https://www.svgrepo.com/show/382097/female-avatar-girl-face-woman-user-9.svg" // SVG URL

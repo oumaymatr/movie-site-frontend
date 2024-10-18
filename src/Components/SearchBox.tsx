@@ -7,7 +7,6 @@ export default function SearchBox() {
   const [search, setSearch] = useState("");
   const router = useRouter();
 
-  // Define the type of the event parameter
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     router.push(`/search/${search}`);
@@ -15,7 +14,7 @@ export default function SearchBox() {
 
   return (
     <form
-      className="flex justify-between px-5 max-w-6xl mx-auto mt-4"
+      className="flex justify-between px-5 max-w-6xl mx-auto mt-4 w-full" // Ensure full width
       onSubmit={handleSubmit}
     >
       <input
@@ -27,7 +26,7 @@ export default function SearchBox() {
       />
       <button
         className={`border border-amber-600 text-amber-600 disabled:text-gray-400 
-              rounded-md h-10 px-3 transition-colors duration-200
+              rounded-md h-14 px-4 transition-colors duration-200
               hover:bg-amber-600 hover:text-white`}
         disabled={search === ""}
       >

@@ -26,7 +26,7 @@ export default async function Home({
 
   return (
     <div>
-      <Greeting /> {/* Render the Greeting component here */}
+      <Greeting /> 
       <Results results={results} />
     </div>
   );
