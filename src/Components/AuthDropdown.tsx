@@ -1,29 +1,30 @@
 import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
-import { useRouter } from "next/navigation"; // Import useRouter for navigation
+import { useRouter } from "next/navigation";
+import { jwtDecode } from "jwt-decode";
+
+interface DecodedToken {
+  sub: string;
+}
 
 export default function AuthDropdown() {
   const [isOpen, setIsOpen] = useState(false);
-  const router = useRouter(); // Create an instance of useRouter for redirection
-  const dropdownRef = useRef<HTMLDivElement | null>(null); // Create a ref for the dropdown
+  const [userPhoto, setUserPhoto] = useState<string | null>(null);
+  const router = useRouter();
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
 
   const handleLogout = () => {
-    // Remove token from localStorage
     localStorage.removeItem("token");
-    
-    // Redirect to the login page or homepage
     router.push("/login");
   };
 
-  // Check if the user is logged in by looking for the token
   const isLoggedIn = !!localStorage.getItem("token");
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -31,39 +32,85 @@ export default function AuthDropdown() {
       }
     };
 
-    // Bind the event listener
     document.addEventListener("mousedown", handleClickOutside);
-    
-    // Clean up the event listener on component unmount
+
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [dropdownRef]);
 
+  useEffect(() => {
+    if (isLoggedIn) {
+      const token = localStorage.getItem("token");
+      const decodedToken = jwtDecode<DecodedToken>(token!);
+      const userId = decodedToken.sub;
+
+      const fetchUserPhoto = async () => {
+        try {
+          const response = await fetch(`http://localhost:3000/user/${userId}/profile-picture`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+      
+          if (response.ok) {
+            const userData = await response.json();
+            // Check if photo_de_profil is an absolute URL
+            if (userData.photo_de_profil) {
+              // If it is already an absolute URL, use it directly
+              setUserPhoto(userData.photo_de_profil.startsWith('http') ? userData.photo_de_profil : `http://localhost:3000${userData.photo_de_profil}`);
+            } else {
+              setUserPhoto(null);
+            }
+          }
+        } catch (error) {
+          console.error("Error fetching user photo:", error);
+        }
+      };
+      
+
+      fetchUserPhoto();
+    }
+  }, [isLoggedIn]);
+
   return (
     <div className="relative" ref={dropdownRef}>
       <button onClick={toggleDropdown} className="focus:outline-none">
-        <Image
-          src="https://www.svgrepo.com/show/382097/female-avatar-girl-face-woman-user-9.svg" // SVG URL
-          alt="Profile Picture"
-          width={40}
-          height={40}
-          className="rounded-full cursor-pointer border-2 border-gray-800 dark:border-gray-200 transition duration-300 hover:scale-105"
-        />
+        {userPhoto ? (
+          <Image
+            src={userPhoto}
+            alt="Profile Picture"
+            width={40}
+            height={40}
+            className="rounded-full cursor-pointer border-2 border-gray-800 dark:border-gray-200 transition duration-300 hover:scale-105"
+          />
+        ) : (
+          <div className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center"> {/* Placeholder if no photo */}
+            <span className="text-gray-500">?</span> {/* Optional: show a placeholder icon */}
+          </div>
+        )}
       </button>
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-48 dark:bg-gray-600 bg-indigo-200 shadow-lg rounded-md z-10">
-          {isLoggedIn && ( // Show profile only if logged in
+        <div
+          className="
+            absolute right-0 mt-2 w-48
+            dark:bg-gray-600 bg-indigo-200
+            shadow-lg rounded-md z-10
+            sm:w-48 md:w-56 lg:w-64
+            transition-all duration-300 ease-in-out
+          "
+        >
+          {isLoggedIn && (
             <Link href="/profile" className="block px-4 py-2 hover:bg-gray-200">
               Profile
             </Link>
           )}
-          {!isLoggedIn && ( // Show sign-up only if not logged in
+          {!isLoggedIn && (
             <Link href="/signup" className="block px-4 py-2 hover:bg-gray-200">
               Sign Up
             </Link>
           )}
-          {isLoggedIn ? ( // Conditional rendering for logout
+          {isLoggedIn ? (
             <button
               onClick={handleLogout}
               className="block w-full text-left px-4 py-2 hover:bg-gray-200"
