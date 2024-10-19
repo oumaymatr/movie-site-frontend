@@ -90,7 +90,7 @@ const About = () => {
           href="mailto:youremail@example.com"
           className="text-blue-500 hover:underline"
         >
-          oumayma.trabelsi@etu.univ-nantes.fr
+          oumayma.trabelsi@etudiant-enit.utm.tn
         </a>
       </p>
     </div>

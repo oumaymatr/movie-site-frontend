@@ -27,7 +27,10 @@ export default function AuthDropdown() {
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         setIsOpen(false);
       }
     };
@@ -47,18 +50,25 @@ export default function AuthDropdown() {
 
       const fetchUserPhoto = async () => {
         try {
-          const response = await fetch(`http://localhost:3000/user/${userId}/profile-picture`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
-      
+          const response = await fetch(
+            `http://localhost:3000/user/${userId}/profile-picture`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+
           if (response.ok) {
             const userData = await response.json();
             // Check if photo_de_profil is an absolute URL
             if (userData.photo_de_profil) {
               // If it is already an absolute URL, use it directly
-              setUserPhoto(userData.photo_de_profil.startsWith('http') ? userData.photo_de_profil : `http://localhost:3000${userData.photo_de_profil}`);
+              setUserPhoto(
+                userData.photo_de_profil.startsWith("http")
+                  ? userData.photo_de_profil
+                  : `http://localhost:3000${userData.photo_de_profil}`
+              );
             } else {
               setUserPhoto(null);
             }
@@ -67,7 +77,6 @@ export default function AuthDropdown() {
           console.error("Error fetching user photo:", error);
         }
       };
-      
 
       fetchUserPhoto();
     }
@@ -77,16 +86,22 @@ export default function AuthDropdown() {
     <div className="relative" ref={dropdownRef}>
       <button onClick={toggleDropdown} className="focus:outline-none">
         {userPhoto ? (
-          <Image
-            src={userPhoto}
-            alt="Profile Picture"
-            width={40}
-            height={40}
-            className="rounded-full cursor-pointer border-2 border-gray-800 dark:border-gray-200 transition duration-300 hover:scale-105"
-          />
+           <div className="rounded-full overflow-hidden w-10 h-10 border-2 border-gray-800 dark:border-gray-200 transition duration-300 hover:scale-105 cursor-pointer">
+           <Image
+             src={userPhoto}
+             alt="Profile Picture"
+             width={40} // Ensure this matches the parent div size
+             height={40} // Ensure this matches the parent div size
+             className="object-cover w-full h-full" // Fills the entire circular area
+           />
+         </div>
+        
         ) : (
-          <div className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center"> {/* Placeholder if no photo */}
-            <span className="text-gray-500">?</span> {/* Optional: show a placeholder icon */}
+          <div className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center">
+            {" "}
+            {/* Placeholder if no photo */}
+            <span className="text-gray-500">?</span>{" "}
+            {/* Optional: show a placeholder icon */}
           </div>
         )}
       </button>

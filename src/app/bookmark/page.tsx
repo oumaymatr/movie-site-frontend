@@ -25,20 +25,28 @@ interface Result {
 export default function BookmarkPage() {
   const [bookmarkedMovies, setBookmarkedMovies] = useState<Result[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
 
   useEffect(() => {
     const fetchBookmarkedMovies = async () => {
+      const token = localStorage.getItem('token'); // Get the token
+
+      if (!token) {
+        setLoading(false); // Stop loading if no token
+        return; // Exit if there's no token
+      }
+
       try {
         const response = await fetch('http://localhost:3000/user/bookmark', {
           method: 'GET',
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            'Authorization': `Bearer ${token}`,
           },
         });
 
         if (!response.ok) {
-          throw new Error('Failed to fetch bookmarked movie IDs');
+          // Handle errors silently, just stop loading
+          setLoading(false);
+          return;
         }
 
         const movieIds: string[] = await response.json();
@@ -60,12 +68,8 @@ export default function BookmarkPage() {
 
         const movies = await Promise.all(movieIds.map(fetchMovieDetails));
         setBookmarkedMovies(movies);
-      } catch (err) {
-        if (err instanceof Error) {
-          setError(err.message);
-        } else {
-          setError('An unknown error occurred');
-        }
+      } catch {
+        // Handle errors silently, just stop loading
       } finally {
         setLoading(false);
       }
@@ -91,7 +95,6 @@ export default function BookmarkPage() {
       setBookmarkedMovies((prev) => prev.filter((movie) => movie.id !== movieId));
     } catch (error) {
       console.error('Error removing bookmark:', error);
-      setError('Failed to remove bookmark. Please try again.');
     }
   };
 
@@ -101,7 +104,6 @@ export default function BookmarkPage() {
 
   return (
     <div className="p-4">
-      {error && <p className="text-red-500">{error}</p>}
       {bookmarkedMovies.length === 0 ? (
         <p className="text-gray-500">You still have no bookmarked movies.</p>
       ) : (
