@@ -45,10 +45,22 @@ const Login = () => {
       console.error('Login error:', err);
 
       if (axios.isAxiosError(err) && err.response) {
-        setError(err.response.data.message); // Display specific error from server
+        // Log the entire error response for better debugging
+        console.error('Axios error response:', err.response);
+      
+        // Handle different status codes
+        if (err.response.status === 401) {
+          // Handle unauthorized error specifically
+          setError('Incorrect password. Please try again.'); 
+        } else if (err.response.status === 404) {
+          // Handle user not found error
+          setError('User does not exist. Please check your email.');
+        } else {
+          setError(err.response.data.message || 'An error occurred.'); // Use specific error messages
+        }
       } else {
         setError('An unknown error occurred'); // Fallback error message
-      }
+      }      
     }
   };
 
